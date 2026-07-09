@@ -1,6 +1,6 @@
 #include "game.h"
 #include "renderer.h"
-#include "../tools/sprite2c/assets.h"
+#include "../tools/generated/assets.h"
 #include <SDL2/SDL.h>
 
 bool Game_Init(void)
@@ -40,9 +40,7 @@ void Game_Run(void)
             10,
             0,
             0,
-
             gSpriteSheet);
-
         Renderer_Present();
     }
 }
