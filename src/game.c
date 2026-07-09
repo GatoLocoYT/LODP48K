@@ -1,52 +1,11 @@
 #include "game.h"
+#include "renderer.h"
 
 #include <SDL2/SDL.h>
-#include <stdio.h>
-
-static SDL_Window* gWindow = NULL;
-static SDL_Renderer* gRenderer = NULL;
 
 bool Game_Init(void)
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        printf("SDL Error: %s\n", SDL_GetError());
-        return false;
-    }
-
-    gWindow = SDL_CreateWindow(
-        "LODP48K",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        640,
-        480,
-        SDL_WINDOW_SHOWN
-    );
-
-    if (gWindow == NULL)
-    {
-        printf("Window Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return false;
-    }
-
-    gRenderer = SDL_CreateRenderer(
-        gWindow,
-        -1,
-        SDL_RENDERER_ACCELERATED
-    );
-
-    if (gRenderer == NULL)
-    {
-        printf("Renderer Error: %s\n", SDL_GetError());
-
-        SDL_DestroyWindow(gWindow);
-        SDL_Quit();
-
-        return false;
-    }
-
-    return true;
+    return Renderer_Init();
 }
 
 void Game_Run(void)
@@ -61,39 +20,31 @@ void Game_Run(void)
         {
             switch (event.type)
             {
-                case SDL_QUIT:
+            case SDL_QUIT:
+                running = false;
+                break;
+
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_ESCAPE)
+                {
                     running = false;
-                    break;
-
-                case SDL_KEYDOWN:
-
-                    if (event.key.keysym.sym == SDLK_ESCAPE)
-                    {
-                        running = false;
-                    }
-
-                    break;
+                }
+                break;
             }
         }
 
-        SDL_SetRenderDrawColor(
-            gRenderer,
-            0,
-            0,
-            0,
-            255
-        );
+        Renderer_Clear();
 
-        SDL_RenderClear(gRenderer);
+        Renderer_DrawPixel(
+            10,
+            10,
+            0xFFFFFFFF);
 
-        SDL_RenderPresent(gRenderer);
+        Renderer_Present();
     }
 }
 
 void Game_Quit(void)
 {
-    SDL_DestroyRenderer(gRenderer);
-    SDL_DestroyWindow(gWindow);
-
-    SDL_Quit();
+    Renderer_Quit();
 }

@@ -22,6 +22,7 @@ find_package(SDL2 REQUIRED)
 add_executable(LODP48K
     src/main.c
     src/game.c
+    src/renderer.c
 )
 
 # ===========================
