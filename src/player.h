@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <stdbool.h>
+#include "direction.h"
 
 bool Player_Init(void);
 

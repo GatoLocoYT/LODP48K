@@ -1,12 +1,16 @@
 #include "renderer.h"
 
 #include <SDL2/SDL.h>
+
 #define SPRITE_SIZE 8
 #define SPRITESHEET_WIDTH 64
+
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+
 #define ROOM_OFFSET_X 128
 #define ROOM_OFFSET_Y 48
+
 #define PIXEL_SCALE 3
 
 static SDL_Window *gWindow = NULL;
@@ -94,11 +98,29 @@ void Renderer_DrawPixel(
         gRenderer,
         &pixel);
 }
+
 void Renderer_DrawSprite(
     int screenX,
     int screenY,
     int spriteX,
     int spriteY,
+    const uint32_t *spriteSheet)
+{
+    Renderer_DrawSpriteEx(
+        screenX,
+        screenY,
+        spriteX,
+        spriteY,
+        DIR_RIGHT,
+        spriteSheet);
+}
+
+void Renderer_DrawSpriteEx(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    Direction direction,
     const uint32_t *spriteSheet)
 {
     int startX = spriteX * SPRITE_SIZE;
@@ -108,20 +130,37 @@ void Renderer_DrawSprite(
     {
         for (int x = 0; x < SPRITE_SIZE; x++)
         {
+            int sourceX = x;
+            int sourceY = y;
+
+            switch (direction)
+            {
+            case DIR_RIGHT:
+                sourceX = x;
+                sourceY = y;
+                break;
+
+            case DIR_LEFT:
+                sourceX = SPRITE_SIZE - 1 - x;
+                sourceY = y;
+                break;
+
+            case DIR_UP:
+                sourceX = SPRITE_SIZE - 1 - y;
+                sourceY = x;
+                break;
+
+            case DIR_DOWN:
+                sourceX = y;
+                sourceY = SPRITE_SIZE - 1 - x;
+                break;
+            }
+
             int sheetIndex =
-                (startY + y) * SPRITESHEET_WIDTH +
-                (startX + x);
+                (startY + sourceY) * SPRITESHEET_WIDTH +
+                (startX + sourceX);
 
             uint32_t color = spriteSheet[sheetIndex];
-
-            // if (color != 0)
-            // {
-            //     printf(
-            //         "(%d,%d) -> %08X\n",
-            //         x,
-            //         y,
-            //         color);
-            // }
 
             Renderer_DrawPixel(
                 screenX * SPRITE_SIZE + x,
@@ -130,6 +169,7 @@ void Renderer_DrawSprite(
         }
     }
 }
+
 void Renderer_Present(void)
 {
     SDL_RenderPresent(gRenderer);

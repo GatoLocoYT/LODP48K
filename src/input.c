@@ -7,16 +7,11 @@ static bool gRight = false;
 static bool gUp    = false;
 static bool gDown  = false;
 
-static bool gQuit  = false;
+static bool gQuit = false;
 
 void Input_Update(void)
 {
     SDL_Event event;
-
-    gLeft  = false;
-    gRight = false;
-    gUp    = false;
-    gDown  = false;
 
     while (SDL_PollEvent(&event))
     {
@@ -27,33 +22,20 @@ void Input_Update(void)
                 break;
 
             case SDL_KEYDOWN:
-
-                switch(event.key.keysym.sym)
+                if (event.key.keysym.sym == SDLK_ESCAPE)
                 {
-                    case SDLK_LEFT:
-                        gLeft = true;
-                        break;
-
-                    case SDLK_RIGHT:
-                        gRight = true;
-                        break;
-
-                    case SDLK_UP:
-                        gUp = true;
-                        break;
-
-                    case SDLK_DOWN:
-                        gDown = true;
-                        break;
-
-                    case SDLK_ESCAPE:
-                        gQuit = true;
-                        break;
+                    gQuit = true;
                 }
-
                 break;
         }
     }
+
+    const Uint8* keyboard = SDL_GetKeyboardState(NULL);
+
+    gLeft  = keyboard[SDL_SCANCODE_LEFT];
+    gRight = keyboard[SDL_SCANCODE_RIGHT];
+    gUp    = keyboard[SDL_SCANCODE_UP];
+    gDown  = keyboard[SDL_SCANCODE_DOWN];
 }
 
 bool Input_Left(void)
