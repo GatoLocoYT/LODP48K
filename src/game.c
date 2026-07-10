@@ -4,7 +4,7 @@
 #include "room.h"
 #include "input.h"
 #include "player.h"
-
+#include "bullet.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -20,6 +20,11 @@ bool Game_Init(void)
     Room_LoadRandom();
 
     if (!Player_Init())
+    {
+        return false;
+    }
+
+    if (!Bullet_Init())
     {
         return false;
     }
@@ -42,9 +47,13 @@ void Game_Run(void)
 
         Player_Update();
 
+        Bullet_Update();
+
         Renderer_Clear();
 
         Room_Draw();
+
+        Bullet_Draw();
 
         Player_Draw();
 

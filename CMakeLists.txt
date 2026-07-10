@@ -26,6 +26,7 @@ add_executable(LODP48K
     src/room.c
     src/input.c
     src/player.c
+    src/bullet.c
 )
 
 # ===========================

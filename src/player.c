@@ -1,11 +1,16 @@
 #include "player.h"
-
+#include "bullet.h"
 #include "input.h"
 #include "renderer.h"
 #include "room.h"
 
 #include "../tools/generated/assets.h"
+#include <SDL2/SDL.h>
+#include "bullet.h"
 
+static Uint32 gLastShotTime = 0;
+
+#define FIRE_DELAY 120
 static int gPlayerX = 8;
 static int gPlayerY = 8;
 
@@ -25,6 +30,7 @@ bool Player_Init(void)
     gDirection = DIR_RIGHT;
 
     gLastMoveTime = SDL_GetTicks();
+    gLastShotTime = SDL_GetTicks();
 
     return true;
 }
@@ -98,6 +104,18 @@ void Player_Update(void)
     {
         Room_LoadRandom();
         gPlayerY = 1;
+    }
+    if (Input_Shoot())
+    {
+        if (now - gLastShotTime >= FIRE_DELAY)
+        {
+            Bullet_Shoot(
+                gPlayerX,
+                gPlayerY,
+                gDirection);
+
+            gLastShotTime = now;
+        }
     }
 }
 
