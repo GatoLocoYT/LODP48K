@@ -23,6 +23,8 @@ add_executable(LODP48K
     src/main.c
     src/game.c
     src/renderer.c
+    src/room.c
+    src/input.c
 )
 
 # ===========================

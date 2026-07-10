@@ -5,8 +5,9 @@
 #define SPRITESHEET_WIDTH 64
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
-
-#define PIXEL_SCALE 8
+#define ROOM_OFFSET_X 128
+#define ROOM_OFFSET_Y 48
+#define PIXEL_SCALE 3
 
 static SDL_Window *gWindow = NULL;
 static SDL_Renderer *gRenderer = NULL;
@@ -77,8 +78,8 @@ void Renderer_DrawPixel(
 
     SDL_Rect pixel =
         {
-            x * PIXEL_SCALE,
-            y * PIXEL_SCALE,
+            ROOM_OFFSET_X + x * PIXEL_SCALE,
+            ROOM_OFFSET_Y + y * PIXEL_SCALE,
             PIXEL_SCALE,
             PIXEL_SCALE};
 
@@ -123,8 +124,8 @@ void Renderer_DrawSprite(
             // }
 
             Renderer_DrawPixel(
-                screenX + x,
-                screenY + y,
+                screenX * SPRITE_SIZE + x,
+                screenY * SPRITE_SIZE + y,
                 color);
         }
     }
