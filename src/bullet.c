@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 
 #include "renderer.h"
-#include "room.h"
+#include "raycast.h"
 
 #define BULLET_POOL_SIZE 6
 
@@ -120,22 +120,11 @@ void Bullet_Update(void)
                 break;
         }
 
-        int tileX = bullet->pixelX / 8;
-        int tileY = bullet->pixelY / 8;
-
-        if (tileX < 0 ||
-            tileX >= ROOM_WIDTH ||
-            tileY < 0 ||
-            tileY >= ROOM_HEIGHT)
+        if (Raycast_HitWall(
+                bullet->pixelX,
+                bullet->pixelY))
         {
             bullet->active = false;
-            continue;
-        }
-
-        if (!Room_IsWalkable(tileX, tileY))
-        {
-            bullet->active = false;
-            continue;
         }
     }
 }

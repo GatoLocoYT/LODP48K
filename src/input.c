@@ -45,10 +45,10 @@ void Input_Update(void)
 
     gShoot = keyboard[SDL_SCANCODE_SPACE];
 
-    if (gShoot && !lastShoot)
-    {
-        printf("SPACE PRESSED\n");
-    }
+    // if (gShoot && !lastShoot)
+    // {
+    //     printf("SPACE PRESSED\n");
+    // }
 
     lastShoot = gShoot;
 }
