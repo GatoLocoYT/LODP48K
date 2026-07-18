@@ -1,5 +1,5 @@
 #include "game.h"
-
+#include "enemy.h"
 #include "renderer.h"
 #include "room.h"
 #include "input.h"
@@ -29,6 +29,11 @@ bool Game_Init(void)
         return false;
     }
 
+    if (!Enemy_Init())
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -44,6 +49,7 @@ void Game_Run(void)
         {
             running = false;
         }
+        Enemy_Update();
 
         Player_Update();
 
@@ -52,6 +58,8 @@ void Game_Run(void)
         Renderer_Clear();
 
         Room_Draw();
+
+        Enemy_Draw();
 
         Bullet_Draw();
 

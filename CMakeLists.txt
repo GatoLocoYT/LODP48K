@@ -28,6 +28,7 @@ add_executable(LODP48K
     src/player.c
     src/bullet.c
     src/raycast.c
+    src/enemy.c
 )
 
 # ===========================
