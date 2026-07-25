@@ -6,7 +6,9 @@
 
 bool Player_Init(void);
 
-void Player_Update(void);
+bool Player_Update(void);
+
+void Player_EnterRoom(void);
 
 void Player_Draw(void);
 

@@ -13,6 +13,13 @@ void Enemy_Draw(void);
 
 bool Enemy_IsAlive(void);
 
+int Enemy_FindAt(
+    int x,
+    int y
+);
+
+void Enemy_Damage(int index);
+
 int Enemy_GetX(void);
 int Enemy_GetY(void);
 

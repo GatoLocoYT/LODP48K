@@ -51,7 +51,12 @@ void Game_Run(void)
         }
         Enemy_Update();
 
-        Player_Update();
+        if (Player_Update())
+        {
+            Room_LoadRandom();
+            Player_EnterRoom();
+            Enemy_Spawn();
+        }
 
         Bullet_Update();
 

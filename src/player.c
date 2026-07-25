@@ -35,13 +35,13 @@ bool Player_Init(void)
     return true;
 }
 
-void Player_Update(void)
+bool Player_Update(void)
 {
     Uint32 now = SDL_GetTicks();
 
     if (now - gLastMoveTime < PLAYER_MOVE_DELAY)
     {
-        return;
+        return false;
     }
 
     gLastMoveTime = now;
@@ -82,29 +82,14 @@ void Player_Update(void)
         }
     }
 
-    if (gPlayerX < 0)
+    if (gPlayerX < 0 ||
+        gPlayerX >= ROOM_WIDTH ||
+        gPlayerY < 0 ||
+        gPlayerY >= ROOM_HEIGHT)
     {
-        Room_LoadRandom();
-        gPlayerX = ROOM_WIDTH - 2;
+        return true;
     }
 
-    if (gPlayerX >= ROOM_WIDTH)
-    {
-        Room_LoadRandom();
-        gPlayerX = 1;
-    }
-
-    if (gPlayerY < 0)
-    {
-        Room_LoadRandom();
-        gPlayerY = ROOM_HEIGHT - 2;
-    }
-
-    if (gPlayerY >= ROOM_HEIGHT)
-    {
-        Room_LoadRandom();
-        gPlayerY = 1;
-    }
     if (Input_Shoot())
     {
         if (now - gLastShotTime >= FIRE_DELAY)
@@ -116,6 +101,31 @@ void Player_Update(void)
 
             gLastShotTime = now;
         }
+    }
+
+    return false;
+}
+
+void Player_EnterRoom(void)
+{
+    if (gPlayerX < 0)
+    {
+        gPlayerX = ROOM_WIDTH - 2;
+    }
+
+    if (gPlayerX >= ROOM_WIDTH)
+    {
+        gPlayerX = 1;
+    }
+
+    if (gPlayerY < 0)
+    {
+        gPlayerY = ROOM_HEIGHT - 2;
+    }
+
+    if (gPlayerY >= ROOM_HEIGHT)
+    {
+        gPlayerY = 1;
     }
 }
 

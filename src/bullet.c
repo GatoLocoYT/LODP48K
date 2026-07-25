@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "enemy.h"
 #include "renderer.h"
 #include "raycast.h"
 
@@ -9,6 +10,9 @@
 
 #define BULLET_MOVE_DELAY 16
 #define BULLET_SPEED 2
+#define BULLET_LENGTH 3
+
+#define TILE_SIZE 8
 
 typedef struct
 {
@@ -53,25 +57,29 @@ void Bullet_Shoot(
 
         bullet->direction = direction;
 
-        bullet->pixelX = startX * 8 + 4;
-        bullet->pixelY = startY * 8 + 4;
+        bullet->pixelX = startX * TILE_SIZE + TILE_SIZE / 2;
+        bullet->pixelY = startY * TILE_SIZE + TILE_SIZE / 2;
 
         switch (direction)
         {
             case DIR_RIGHT:
-                bullet->pixelX += 8;
+                bullet->pixelX =
+                    (startX + 1) * TILE_SIZE;
                 break;
 
             case DIR_LEFT:
-                bullet->pixelX -= 8;
+                bullet->pixelX =
+                    startX * TILE_SIZE - BULLET_LENGTH;
                 break;
 
             case DIR_UP:
-                bullet->pixelY -= 8;
+                bullet->pixelY =
+                    startY * TILE_SIZE - BULLET_LENGTH;
                 break;
 
             case DIR_DOWN:
-                bullet->pixelY += 8;
+                bullet->pixelY =
+                    (startY + 1) * TILE_SIZE;
                 break;
         }
 
@@ -120,9 +128,27 @@ void Bullet_Update(void)
                 break;
         }
 
-        if (Raycast_HitWall(
-                bullet->pixelX,
-                bullet->pixelY))
+        int hitX = bullet->pixelX;
+        int hitY = bullet->pixelY;
+
+        if (bullet->direction == DIR_RIGHT)
+        {
+            hitX += BULLET_LENGTH - 1;
+        }
+        else if (bullet->direction == DIR_DOWN)
+        {
+            hitY += BULLET_LENGTH - 1;
+        }
+
+        RaycastResult result =
+            Raycast_Cast(hitX, hitY);
+
+        if (result.hit == RAYCAST_HIT_ENEMY)
+        {
+            Enemy_Damage(result.enemyIndex);
+        }
+
+        if (result.hit != RAYCAST_HIT_NONE)
         {
             bullet->active = false;
         }
