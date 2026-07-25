@@ -13,13 +13,18 @@
 
 #define ENEMY_HP 3
 
-#define ENEMY_FLASH_DURATION 160
+#define ENEMY_START_DELAY 550
+#define ENEMY_MOVE_DELAY 450
+
+#define ENEMY_FLASH_DURATION 120
 #define ENEMY_FLASH_INTERVAL 40
 
 typedef struct
 {
     bool alive;
     bool flashing;
+    bool mirrored;
+    bool horizontalFirst;
 
     int x;
     int y;
@@ -31,6 +36,9 @@ typedef struct
 } Enemy;
 
 static Enemy gEnemies[ENEMY_POOL_SIZE];
+
+static Uint32 gSpawnTime = 0;
+static Uint32 gLastMoveTime = 0;
 
 static int Enemy_GetSpawnCount(void)
 {
@@ -87,6 +95,133 @@ static bool Enemy_CanSpawnAt(
     return true;
 }
 
+static bool Enemy_CanMoveTo(
+    int x,
+    int y,
+    int enemyIndex)
+{
+    if (!Room_IsWalkable(x, y))
+    {
+        return false;
+    }
+
+    if (x == Player_GetX() &&
+        y == Player_GetY())
+    {
+        return false;
+    }
+
+    for (int i = 0; i < ENEMY_POOL_SIZE; i++)
+    {
+        if (i == enemyIndex)
+        {
+            continue;
+        }
+
+        if (gEnemies[i].alive &&
+            gEnemies[i].x == x &&
+            gEnemies[i].y == y)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static bool Enemy_TryMove(
+    Enemy* enemy,
+    int enemyIndex,
+    int moveX,
+    int moveY)
+{
+    int nextX = enemy->x + moveX;
+    int nextY = enemy->y + moveY;
+
+    if (!Enemy_CanMoveTo(
+            nextX,
+            nextY,
+            enemyIndex))
+    {
+        return false;
+    }
+
+    enemy->x = nextX;
+    enemy->y = nextY;
+    enemy->mirrored = !enemy->mirrored;
+    enemy->horizontalFirst =
+        !enemy->horizontalFirst;
+
+    return true;
+}
+
+static void Enemy_MoveTowardPlayer(
+    Enemy* enemy,
+    int enemyIndex)
+{
+    int deltaX = Player_GetX() - enemy->x;
+    int deltaY = Player_GetY() - enemy->y;
+
+    int distanceX = abs(deltaX);
+    int distanceY = abs(deltaY);
+
+    if (distanceX + distanceY <= 1)
+    {
+        return;
+    }
+
+    int moveX = (deltaX > 0) - (deltaX < 0);
+    int moveY = (deltaY > 0) - (deltaY < 0);
+
+    bool moveHorizontalFirst =
+        moveX != 0 &&
+        (moveY == 0 ||
+         enemy->horizontalFirst);
+
+    if (moveHorizontalFirst)
+    {
+        if (moveX != 0 &&
+            Enemy_TryMove(
+                enemy,
+                enemyIndex,
+                moveX,
+                0))
+        {
+            return;
+        }
+
+        if (moveY != 0)
+        {
+            Enemy_TryMove(
+                enemy,
+                enemyIndex,
+                0,
+                moveY);
+        }
+    }
+    else
+    {
+        if (moveY != 0 &&
+            Enemy_TryMove(
+                enemy,
+                enemyIndex,
+                0,
+                moveY))
+        {
+            return;
+        }
+
+        if (moveX != 0)
+        {
+            Enemy_TryMove(
+                enemy,
+                enemyIndex,
+                moveX,
+                0);
+        }
+    }
+}
+
 bool Enemy_Init(void)
 {
     Enemy_Spawn();
@@ -120,7 +255,12 @@ void Enemy_Spawn(void)
         enemy->hp = ENEMY_HP;
         enemy->alive = true;
         enemy->flashing = false;
+        enemy->mirrored = false;
+        enemy->horizontalFirst = (i % 2 == 0);
     }
+
+    gSpawnTime = SDL_GetTicks();
+    gLastMoveTime = gSpawnTime;
 }
 
 void Enemy_Update(void)
@@ -150,6 +290,27 @@ void Enemy_Update(void)
             enemy->alive = false;
         }
     }
+
+    if (now - gSpawnTime < ENEMY_START_DELAY ||
+        now - gLastMoveTime < ENEMY_MOVE_DELAY)
+    {
+        return;
+    }
+
+    gLastMoveTime = now;
+
+    for (int i = 0; i < ENEMY_POOL_SIZE; i++)
+    {
+        Enemy* enemy = &gEnemies[i];
+
+        if (!enemy->alive ||
+            enemy->hp <= 0)
+        {
+            continue;
+        }
+
+        Enemy_MoveTowardPlayer(enemy, i);
+    }
 }
 
 void Enemy_Draw(void)
@@ -172,12 +333,12 @@ void Enemy_Draw(void)
             continue;
         }
 
-        Renderer_DrawSpriteEx(
+        Renderer_DrawSpriteMirrored(
             enemy->x,
             enemy->y,
             1,      // sprite del enemigo
             0,
-            DIR_RIGHT,
+            enemy->mirrored,
             gSpriteSheet);
     }
 }

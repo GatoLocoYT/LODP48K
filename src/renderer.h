@@ -31,6 +31,15 @@ void Renderer_DrawSpriteEx(
     const uint32_t* spriteSheet
 );
 
+void Renderer_DrawSpriteMirrored(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    bool mirrored,
+    const uint32_t* spriteSheet
+);
+
 void Renderer_Present(void);
 
 void Renderer_Quit(void);
