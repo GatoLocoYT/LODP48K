@@ -177,14 +177,60 @@ void Renderer_DrawSprite(int sx,int sy,int spx,int spy,const uint32_t *sheet)
     Renderer_DrawSpriteInternal(sx, sy, spx, spy, DIR_RIGHT, false, sheet);
 }
 
+void Renderer_DrawAssetSprite(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY)
+{
+    Renderer_DrawSprite(
+        screenX,
+        screenY,
+        spriteX,
+        spriteY,
+        gSpriteSheet);
+}
+
 void Renderer_DrawSpriteEx(int sx,int sy,int spx,int spy,Direction dir,const uint32_t *sheet)
 {
     Renderer_DrawSpriteInternal(sx, sy, spx, spy, dir, false, sheet);
 }
 
+void Renderer_DrawAssetSpriteEx(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    Direction direction)
+{
+    Renderer_DrawSpriteEx(
+        screenX,
+        screenY,
+        spriteX,
+        spriteY,
+        direction,
+        gSpriteSheet);
+}
+
 void Renderer_DrawSpriteMirrored(int sx,int sy,int spx,int spy,bool mirrored,const uint32_t *sheet)
 {
     Renderer_DrawSpriteInternal(sx, sy, spx, spy, DIR_RIGHT, mirrored, sheet);
+}
+
+void Renderer_DrawAssetSpriteMirrored(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    bool mirrored)
+{
+    Renderer_DrawSpriteMirrored(
+        screenX,
+        screenY,
+        spriteX,
+        spriteY,
+        mirrored,
+        gSpriteSheet);
 }
 
 void Renderer_DrawScreenSprite(

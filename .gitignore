@@ -42,3 +42,5 @@ Makefile
 *.bak
 *.tmp
 *.swp
+
+assets_Backup.h

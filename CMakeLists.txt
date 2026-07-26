@@ -24,6 +24,7 @@ add_executable(LODP48K
     src/game.c
     src/hud.c
     src/menu.c
+    src/obelisk.c
     src/renderer.c
     src/room.c
     src/input.c
@@ -31,6 +32,7 @@ add_executable(LODP48K
     src/bullet.c
     src/raycast.c
     src/enemy.c
+    src/victory.c
 )
 
 # ===========================

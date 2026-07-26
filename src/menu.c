@@ -1,5 +1,7 @@
 #include "menu.h"
 
+#include <SDL2/SDL.h>
+
 #include "renderer.h"
 
 #define MENU_PIXEL_SCALE 3
@@ -10,6 +12,10 @@
 
 #define MENU_START_X 260
 #define MENU_START_Y 288
+
+#define MENU_CURSOR_X 224
+#define MENU_CURSOR_VISIBLE_TIME 700
+#define MENU_CURSOR_BLINK_TIME 1000
 
 static void Menu_DrawGlyph(
     int x,
@@ -72,6 +78,17 @@ static void Menu_DrawTitle(void)
 
 static void Menu_DrawStart(void)
 {
+    if (SDL_GetTicks() %
+            MENU_CURSOR_BLINK_TIME <
+        MENU_CURSOR_VISIBLE_TIME)
+    {
+        Menu_DrawGlyph(
+            MENU_CURSOR_X,
+            MENU_START_Y,
+            7,
+            3);
+    }
+
     Menu_DrawGlyph(
         MENU_START_X,
         MENU_START_Y,

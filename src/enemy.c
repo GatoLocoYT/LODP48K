@@ -3,11 +3,10 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 
+#include "obelisk.h"
 #include "player.h"
 #include "room.h"
 #include "renderer.h"
-
-#include "../tools/generated/assets.h"
 
 #define ENEMY_POOL_SIZE 5
 
@@ -77,6 +76,11 @@ static bool Enemy_CanSpawnAt(
         return false;
     }
 
+    if (Obelisk_IsAt(x, y))
+    {
+        return false;
+    }
+
     if (x == Player_GetX() &&
         y == Player_GetY())
     {
@@ -101,6 +105,11 @@ static bool Enemy_CanMoveTo(
     int enemyIndex)
 {
     if (!Room_IsWalkable(x, y))
+    {
+        return false;
+    }
+
+    if (Obelisk_IsAt(x, y))
     {
         return false;
     }
@@ -274,6 +283,15 @@ void Enemy_Spawn(void)
     gLastMoveTime = gSpawnTime;
 }
 
+void Enemy_Clear(void)
+{
+    for (int i = 0; i < ENEMY_POOL_SIZE; i++)
+    {
+        gEnemies[i].alive = false;
+        gEnemies[i].flashing = false;
+    }
+}
+
 void Enemy_Update(void)
 {
     Uint32 now = SDL_GetTicks();
@@ -349,13 +367,12 @@ void Enemy_Draw(void)
             continue;
         }
 
-        Renderer_DrawSpriteMirrored(
+        Renderer_DrawAssetSpriteMirrored(
             enemy->x,
             enemy->y,
             1,      // sprite del enemigo
             0,
-            enemy->mirrored,
-            gSpriteSheet);
+            enemy->mirrored);
     }
 }
 

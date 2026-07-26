@@ -22,6 +22,13 @@ void Renderer_DrawSprite(
     const uint32_t* spriteSheet
 );
 
+void Renderer_DrawAssetSprite(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY
+);
+
 void Renderer_DrawSpriteEx(
     int screenX,
     int screenY,
@@ -31,6 +38,14 @@ void Renderer_DrawSpriteEx(
     const uint32_t* spriteSheet
 );
 
+void Renderer_DrawAssetSpriteEx(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    Direction direction
+);
+
 void Renderer_DrawSpriteMirrored(
     int screenX,
     int screenY,
@@ -38,6 +53,14 @@ void Renderer_DrawSpriteMirrored(
     int spriteY,
     bool mirrored,
     const uint32_t* spriteSheet
+);
+
+void Renderer_DrawAssetSpriteMirrored(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    bool mirrored
 );
 
 void Renderer_DrawScreenSprite(

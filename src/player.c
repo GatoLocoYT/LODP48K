@@ -4,7 +4,6 @@
 #include "renderer.h"
 #include "room.h"
 
-#include "../tools/generated/assets.h"
 #include <SDL2/SDL.h>
 #include "bullet.h"
 
@@ -141,13 +140,12 @@ void Player_EnterRoom(void)
 
 void Player_Draw(void)
 {
-    Renderer_DrawSpriteEx(
+    Renderer_DrawAssetSpriteEx(
         gPlayerX,
         gPlayerY,
         0,
         0,
-        gDirection,
-        gSpriteSheet);
+        gDirection);
 }
 
 bool Player_Damage(void)

@@ -4,7 +4,6 @@
 
 #include "renderer.h"
 
-#include "../tools/generated/assets.h"
 #include "../tools/generated/rooms.h"
 
 static const uint8_t* gCurrentRoom = NULL;
@@ -39,12 +38,11 @@ void Room_Draw(void)
             {
                 case TILE_WALL:
 
-                    Renderer_DrawSprite(
+                    Renderer_DrawAssetSprite(
                         x,
                         y,
                         3,
-                        0,
-                        gSpriteSheet
+                        0
                     );
 
                     break;

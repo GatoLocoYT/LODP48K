@@ -8,6 +8,8 @@ static bool gUp = false;
 static bool gDown = false;
 static bool gShoot = false;
 static bool gStart = false;
+static bool gNavigateUp = false;
+static bool gNavigateDown = false;
 static bool gQuit = false;
 
 void Input_Update(void)
@@ -15,6 +17,8 @@ void Input_Update(void)
     SDL_Event event;
     gShoot = false;
     gStart = false;
+    gNavigateUp = false;
+    gNavigateDown = false;
 
     while (SDL_PollEvent(&event))
     {
@@ -34,6 +38,16 @@ void Input_Update(void)
                      event.key.repeat == 0)
             {
                 gStart = true;
+            }
+            else if (event.key.keysym.sym == SDLK_UP &&
+                     event.key.repeat == 0)
+            {
+                gNavigateUp = true;
+            }
+            else if (event.key.keysym.sym == SDLK_DOWN &&
+                     event.key.repeat == 0)
+            {
+                gNavigateDown = true;
             }
             break;
         }
@@ -81,4 +95,14 @@ bool Input_Shoot(void)
 bool Input_Start(void)
 {
     return gStart;
+}
+
+bool Input_NavigateUp(void)
+{
+    return gNavigateUp;
+}
+
+bool Input_NavigateDown(void)
+{
+    return gNavigateDown;
 }

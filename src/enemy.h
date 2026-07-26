@@ -7,6 +7,8 @@ bool Enemy_Init(void);
 
 void Enemy_Spawn(void);
 
+void Enemy_Clear(void);
+
 void Enemy_Update(void);
 
 void Enemy_Draw(void);
