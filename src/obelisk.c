@@ -7,7 +7,7 @@
 #include "room.h"
 
 #define OBELISK_MIN_ROOMS 3
-#define OBELISK_SPAWN_CHANCE 5
+#define OBELISK_SPAWN_CHANCE 3
 #define OBELISK_SPAWN_ATTEMPTS 100
 
 #define OBELISK_SPRITE_X 2

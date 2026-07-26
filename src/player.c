@@ -10,7 +10,7 @@
 static Uint32 gLastShotTime = 0;
 
 #define FIRE_DELAY 120
-#define PLAYER_MAX_HP 3
+#define PLAYER_MAX_HP 4
 #define PLAYER_INVULNERABILITY_TIME 3000
 
 static int gPlayerX = 8;

@@ -1,6 +1,7 @@
 #include "game.h"
 #include <SDL2/SDL.h>
 #include "bullet.h"
+#include "defeat.h"
 #include "enemy.h"
 #include "hud.h"
 #include "input.h"
@@ -28,7 +29,8 @@ typedef enum
 {
     GAME_STATE_MENU,
     GAME_STATE_PLAYING,
-    GAME_STATE_VICTORY
+    GAME_STATE_VICTORY,
+    GAME_STATE_DEFEAT
 } GameState;
 
 static GameState gGameState = GAME_STATE_MENU;
@@ -62,6 +64,21 @@ static void Game_UpdateTimer(void)
         gTimeElapsed +=
             (int)elapsedSeconds;
     }
+}
+
+static bool Game_CheckDefeat(void)
+{
+    if (gTimeRemaining > 0 &&
+        Player_GetHP() > 0)
+    {
+        return false;
+    }
+
+    Enemy_Clear();
+    Obelisk_Clear();
+    gGameState = GAME_STATE_DEFEAT;
+
+    return true;
 }
 
 static bool Game_Start(void)
@@ -99,7 +116,17 @@ static void Game_UpdatePlaying(void)
 {
     Game_UpdateTimer();
 
+    if (Game_CheckDefeat())
+    {
+        return;
+    }
+
     Enemy_Update();
+
+    if (Game_CheckDefeat())
+    {
+        return;
+    }
 
     if (Player_Update())
     {
@@ -158,6 +185,13 @@ static void Game_DrawMenu(void)
 {
     Renderer_Clear();
     Menu_Draw();
+    Renderer_Present();
+}
+
+static void Game_DrawDefeat(void)
+{
+    Renderer_Clear();
+    Defeat_Draw();
     Renderer_Present();
 }
 
@@ -246,11 +280,29 @@ void Game_Run(void)
             continue;
         }
 
+        if (gGameState == GAME_STATE_DEFEAT)
+        {
+            if (Input_Start())
+            {
+                gGameState = GAME_STATE_MENU;
+                Game_DrawMenu();
+                continue;
+            }
+
+            Game_DrawDefeat();
+            continue;
+        }
+
         Game_UpdatePlaying();
 
         if (gGameState == GAME_STATE_VICTORY)
         {
             Game_DrawVictory();
+        }
+        else if (gGameState ==
+                 GAME_STATE_DEFEAT)
+        {
+            Game_DrawDefeat();
         }
         else
         {
