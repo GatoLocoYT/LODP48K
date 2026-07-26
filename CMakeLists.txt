@@ -21,6 +21,7 @@ find_package(SDL2 REQUIRED)
 
 add_executable(LODP48K
     src/main.c
+    src/audio.c
     src/defeat.c
     src/game.c
     src/hud.c

@@ -1,5 +1,6 @@
 #include "game.h"
 #include <SDL2/SDL.h>
+#include "audio.h"
 #include "bullet.h"
 #include "defeat.h"
 #include "enemy.h"
@@ -76,6 +77,16 @@ static bool Game_CheckDefeat(void)
 
     Enemy_Clear();
     Obelisk_Clear();
+
+    if (Player_GetHP() <= 0)
+    {
+        Audio_PlayPlayerDeath();
+    }
+    else
+    {
+        Audio_StopAll();
+    }
+
     gGameState = GAME_STATE_DEFEAT;
 
     return true;
@@ -107,6 +118,7 @@ static bool Game_Start(void)
     gTimeElapsed = 0;
     gScore = 0;
     gLastTimerTick = SDL_GetTicks();
+    Audio_StartGame();
     gGameState = GAME_STATE_PLAYING;
 
     return true;
@@ -152,6 +164,7 @@ static void Game_UpdatePlaying(void)
     {
         Enemy_Clear();
         Obelisk_Clear();
+        Audio_PlayVictory();
         gVictoryOption =
             VICTORY_OPTION_RETRY;
         gGameState = GAME_STATE_VICTORY;
@@ -214,6 +227,8 @@ bool Game_Init(void)
 
     srand((unsigned)time(NULL));
 
+    (void)Audio_Init();
+
     gGameState = GAME_STATE_MENU;
 
     return true;
@@ -266,6 +281,7 @@ void Game_Run(void)
                 if (gVictoryOption ==
                     VICTORY_OPTION_RETRY)
                 {
+                    Audio_StopAll();
                     gGameState =
                         GAME_STATE_MENU;
                     Game_DrawMenu();
@@ -284,6 +300,7 @@ void Game_Run(void)
         {
             if (Input_Start())
             {
+                Audio_StopAll();
                 gGameState = GAME_STATE_MENU;
                 Game_DrawMenu();
                 continue;
@@ -313,5 +330,6 @@ void Game_Run(void)
 
 void Game_Quit(void)
 {
+    Audio_Quit();
     Renderer_Quit();
 }

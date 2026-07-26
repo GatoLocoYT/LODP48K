@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "audio.h"
 #include "enemy.h"
 #include "renderer.h"
 #include "raycast.h"
@@ -84,6 +85,8 @@ void Bullet_Shoot(
         }
 
         bullet->lastMove = SDL_GetTicks();
+
+        Audio_PlayShot();
 
         return;
     }
