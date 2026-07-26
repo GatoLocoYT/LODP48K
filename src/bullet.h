@@ -7,7 +7,7 @@
 
 bool Bullet_Init(void);
 
-void Bullet_Update(void);
+int Bullet_Update(void);
 
 void Bullet_Draw(void);
 

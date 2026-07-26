@@ -18,7 +18,7 @@ int Enemy_FindAt(
     int y
 );
 
-void Enemy_Damage(int index);
+bool Enemy_Damage(int index);
 
 int Enemy_GetX(void);
 int Enemy_GetY(void);

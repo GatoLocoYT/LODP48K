@@ -22,6 +22,8 @@ find_package(SDL2 REQUIRED)
 add_executable(LODP48K
     src/main.c
     src/game.c
+    src/hud.c
+    src/menu.c
     src/renderer.c
     src/room.c
     src/input.c

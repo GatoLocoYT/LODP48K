@@ -7,12 +7,14 @@ static bool gRight = false;
 static bool gUp = false;
 static bool gDown = false;
 static bool gShoot = false;
+static bool gStart = false;
 static bool gQuit = false;
 
 void Input_Update(void)
 {
     SDL_Event event;
     gShoot = false;
+    gStart = false;
 
     while (SDL_PollEvent(&event))
     {
@@ -22,14 +24,16 @@ void Input_Update(void)
             gQuit = true;
             break;
 
-        case SDLK_SPACE:
-            gShoot = true;
-            break;
-
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
             {
                 gQuit = true;
+            }
+            else if ((event.key.keysym.sym == SDLK_RETURN ||
+                      event.key.keysym.sym == SDLK_KP_ENTER) &&
+                     event.key.repeat == 0)
+            {
+                gStart = true;
             }
             break;
         }
@@ -41,16 +45,8 @@ void Input_Update(void)
     gRight = keyboard[SDL_SCANCODE_RIGHT];
     gUp = keyboard[SDL_SCANCODE_UP];
     gDown = keyboard[SDL_SCANCODE_DOWN];
-    static bool lastShoot = false;
 
     gShoot = keyboard[SDL_SCANCODE_SPACE];
-
-    // if (gShoot && !lastShoot)
-    // {
-    //     printf("SPACE PRESSED\n");
-    // }
-
-    lastShoot = gShoot;
 }
 
 bool Input_Left(void)
@@ -80,4 +76,9 @@ bool Input_Quit(void)
 bool Input_Shoot(void)
 {
     return gShoot;
+}
+
+bool Input_Start(void)
+{
+    return gStart;
 }

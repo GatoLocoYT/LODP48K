@@ -222,6 +222,17 @@ static void Enemy_MoveTowardPlayer(
     }
 }
 
+static bool Enemy_IsNextToPlayer(
+    const Enemy* enemy)
+{
+    int distanceX =
+        abs(Player_GetX() - enemy->x);
+    int distanceY =
+        abs(Player_GetY() - enemy->y);
+
+    return distanceX + distanceY == 1;
+}
+
 bool Enemy_Init(void)
 {
     Enemy_Spawn();
@@ -310,6 +321,11 @@ void Enemy_Update(void)
         }
 
         Enemy_MoveTowardPlayer(enemy, i);
+
+        if (Enemy_IsNextToPlayer(enemy))
+        {
+            Player_Damage();
+        }
     }
 }
 
@@ -376,12 +392,12 @@ int Enemy_FindAt(
     return -1;
 }
 
-void Enemy_Damage(int index)
+bool Enemy_Damage(int index)
 {
     if (index < 0 ||
         index >= ENEMY_POOL_SIZE)
     {
-        return;
+        return false;
     }
 
     Enemy* enemy = &gEnemies[index];
@@ -389,12 +405,14 @@ void Enemy_Damage(int index)
     if (!enemy->alive ||
         enemy->hp <= 0)
     {
-        return;
+        return false;
     }
 
     enemy->hp--;
     enemy->flashing = true;
     enemy->lastHit = SDL_GetTicks();
+
+    return enemy->hp == 0;
 }
 
 int Enemy_GetX(void)

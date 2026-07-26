@@ -40,6 +40,14 @@ void Renderer_DrawSpriteMirrored(
     const uint32_t* spriteSheet
 );
 
+void Renderer_DrawScreenSprite(
+    int screenX,
+    int screenY,
+    int spriteX,
+    int spriteY,
+    int scale
+);
+
 void Renderer_Present(void);
 
 void Renderer_Quit(void);

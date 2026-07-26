@@ -12,7 +12,10 @@ void Player_EnterRoom(void);
 
 void Player_Draw(void);
 
+bool Player_Damage(void);
+
 int Player_GetX(void);
 int Player_GetY(void);
+int Player_GetHP(void);
 
 #endif

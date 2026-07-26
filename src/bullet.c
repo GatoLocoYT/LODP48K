@@ -89,9 +89,10 @@ void Bullet_Shoot(
     }
 }
 
-void Bullet_Update(void)
+int Bullet_Update(void)
 {
     Uint32 now = SDL_GetTicks();
+    int defeatedEnemies = 0;
 
     for (int i = 0; i < BULLET_POOL_SIZE; i++)
     {
@@ -145,7 +146,10 @@ void Bullet_Update(void)
 
         if (result.hit == RAYCAST_HIT_ENEMY)
         {
-            Enemy_Damage(result.enemyIndex);
+            if (Enemy_Damage(result.enemyIndex))
+            {
+                defeatedEnemies++;
+            }
         }
 
         if (result.hit != RAYCAST_HIT_NONE)
@@ -153,6 +157,8 @@ void Bullet_Update(void)
             bullet->active = false;
         }
     }
+
+    return defeatedEnemies;
 }
 
 void Bullet_Draw(void)
