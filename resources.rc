@@ -1,0 +1,26 @@
+APP_ICON ICON "assets/icon.ico"
+
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "GatoLoco Studios\0"
+            VALUE "FileDescription",  "La Orden del Plan 48K\0"
+            VALUE "FileVersion",      "1.0.0.0\0"
+            VALUE "InternalName",     "LODP48K\0"
+            VALUE "LegalCopyright",   "Copyright (C) 2026 Ramiro Rahman Rintoul\0"
+            VALUE "OriginalFilename", "LODP48K.exe\0"
+            VALUE "ProductName",      "La Orden del Plan 48K\0"
+            VALUE "ProductVersion",   "1.0.0.0\0"
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END

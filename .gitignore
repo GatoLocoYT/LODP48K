@@ -44,3 +44,5 @@ Makefile
 *.swp
 
 assets_Backup.h
+build-release/
+release/

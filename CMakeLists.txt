@@ -35,7 +35,7 @@ add_executable(LODP48K WIN32
     src/raycast.c
     src/enemy.c
     src/victory.c
-    icon.rc
+    resources.rc
 )
 
 # ===========================
