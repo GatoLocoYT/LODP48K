@@ -15,8 +15,41 @@
 
 #define PIXEL_SCALE 3
 
+#define RENDERER_TARGET_FPS 60
+
 static SDL_Window *gWindow = NULL;
 static SDL_Renderer *gRenderer = NULL;
+
+static Uint64 gPerformanceFrequency = 0;
+static Uint64 gNextFrameCounter = 0;
+
+static void Renderer_WaitForNextFrame(void)
+{
+    Uint64 frameDuration =
+        gPerformanceFrequency /
+        RENDERER_TARGET_FPS;
+
+    gNextFrameCounter += frameDuration;
+
+    Uint64 now = SDL_GetPerformanceCounter();
+
+    if (now >= gNextFrameCounter)
+    {
+        gNextFrameCounter = now;
+        return;
+    }
+
+    Uint64 remaining =
+        gNextFrameCounter - now;
+
+    Uint32 delayMilliseconds =
+        (Uint32)(
+            (remaining * 1000 +
+             gPerformanceFrequency - 1) /
+            gPerformanceFrequency);
+
+    SDL_Delay(delayMilliseconds);
+}
 
 static void Renderer_DrawSpriteInternal(
     int screenX,
@@ -136,6 +169,11 @@ bool Renderer_Init(void)
 
         SDL_FreeSurface(icon);
     }
+
+    gPerformanceFrequency =
+        SDL_GetPerformanceFrequency();
+    gNextFrameCounter =
+        SDL_GetPerformanceCounter();
 
     return true;
 }
@@ -285,6 +323,7 @@ void Renderer_DrawScreenSprite(
 
 void Renderer_Present(void)
 {
+    Renderer_WaitForNextFrame();
     SDL_RenderPresent(gRenderer);
 }
 
