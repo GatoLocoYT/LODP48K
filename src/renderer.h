@@ -3,7 +3,9 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+
 #include "direction.h"
+
 bool Renderer_Init(void);
 
 void Renderer_Clear(void);
@@ -14,28 +16,11 @@ void Renderer_DrawPixel(
     uint32_t color
 );
 
-void Renderer_DrawSprite(
-    int screenX,
-    int screenY,
-    int spriteX,
-    int spriteY,
-    const uint32_t* spriteSheet
-);
-
 void Renderer_DrawAssetSprite(
     int screenX,
     int screenY,
     int spriteX,
     int spriteY
-);
-
-void Renderer_DrawSpriteEx(
-    int screenX,
-    int screenY,
-    int spriteX,
-    int spriteY,
-    Direction direction,
-    const uint32_t* spriteSheet
 );
 
 void Renderer_DrawAssetSpriteEx(
@@ -44,15 +29,6 @@ void Renderer_DrawAssetSpriteEx(
     int spriteX,
     int spriteY,
     Direction direction
-);
-
-void Renderer_DrawSpriteMirrored(
-    int screenX,
-    int screenY,
-    int spriteX,
-    int spriteY,
-    bool mirrored,
-    const uint32_t* spriteSheet
 );
 
 void Renderer_DrawAssetSpriteMirrored(

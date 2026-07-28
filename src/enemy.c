@@ -242,21 +242,11 @@ static bool Enemy_IsNextToPlayer(
     return distanceX + distanceY == 1;
 }
 
-bool Enemy_Init(void)
-{
-    Enemy_Spawn();
-
-    return true;
-}
-
 void Enemy_Spawn(void)
 {
     int enemyCount = Enemy_GetSpawnCount();
 
-    for (int i = 0; i < ENEMY_POOL_SIZE; i++)
-    {
-        gEnemies[i].alive = false;
-    }
+    Enemy_Clear();
 
     for (int i = 0; i < enemyCount; i++)
     {
@@ -370,23 +360,10 @@ void Enemy_Draw(void)
         Renderer_DrawAssetSpriteMirrored(
             enemy->x,
             enemy->y,
-            1,      // sprite del enemigo
+            1,
             0,
             enemy->mirrored);
     }
-}
-
-bool Enemy_IsAlive(void)
-{
-    for (int i = 0; i < ENEMY_POOL_SIZE; i++)
-    {
-        if (gEnemies[i].alive)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 int Enemy_FindAt(
@@ -430,14 +407,4 @@ bool Enemy_Damage(int index)
     enemy->lastHit = SDL_GetTicks();
 
     return enemy->hp == 0;
-}
-
-int Enemy_GetX(void)
-{
-    return gEnemies[0].x;
-}
-
-int Enemy_GetY(void)
-{
-    return gEnemies[0].y;
 }

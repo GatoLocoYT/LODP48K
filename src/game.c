@@ -1,5 +1,9 @@
 #include "game.h"
+
 #include <SDL2/SDL.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "audio.h"
 #include "bullet.h"
 #include "defeat.h"
@@ -12,8 +16,6 @@
 #include "renderer.h"
 #include "room.h"
 #include "victory.h"
-#include <stdlib.h>
-#include <time.h>
 
 #define GAME_TIME_SECONDS 300
 #define SCORE_PER_ENEMY 10
@@ -51,26 +53,24 @@ static void Game_UpdateTimer(void)
 
     gLastTimerTick += elapsedSeconds * 1000;
 
-    if (elapsedSeconds >=
-        (Uint32)gTimeRemaining)
+    int secondsToCount =
+        (int)elapsedSeconds;
+
+    if (secondsToCount > gTimeRemaining)
     {
-        gTimeElapsed +=
-            gTimeRemaining;
-        gTimeRemaining = 0;
+        secondsToCount = gTimeRemaining;
     }
-    else
-    {
-        gTimeRemaining -=
-            (int)elapsedSeconds;
-        gTimeElapsed +=
-            (int)elapsedSeconds;
-    }
+
+    gTimeRemaining -= secondsToCount;
+    gTimeElapsed += secondsToCount;
 }
 
 static bool Game_CheckDefeat(void)
 {
+    int playerHP = Player_GetHP();
+
     if (gTimeRemaining > 0 &&
-        Player_GetHP() > 0)
+        playerHP > 0)
     {
         return false;
     }
@@ -78,7 +78,7 @@ static bool Game_CheckDefeat(void)
     Enemy_Clear();
     Obelisk_Clear();
 
-    if (Player_GetHP() <= 0)
+    if (playerHP <= 0)
     {
         Audio_PlayPlayerDeath();
     }
@@ -92,27 +92,17 @@ static bool Game_CheckDefeat(void)
     return true;
 }
 
-static bool Game_Start(void)
+static void Game_Start(void)
 {
     Room_LoadRandom();
 
-    if (!Player_Init())
-    {
-        return false;
-    }
-
-    if (!Bullet_Init())
-    {
-        return false;
-    }
+    Player_Init();
+    Bullet_Init();
 
     gRoomsPassed = 0;
     Obelisk_Spawn(gRoomsPassed);
 
-    if (!Enemy_Init())
-    {
-        return false;
-    }
+    Enemy_Spawn();
 
     gTimeRemaining = GAME_TIME_SECONDS;
     gTimeElapsed = 0;
@@ -120,8 +110,6 @@ static bool Game_Start(void)
     gLastTimerTick = SDL_GetTicks();
     Audio_StartGame();
     gGameState = GAME_STATE_PLAYING;
-
-    return true;
 }
 
 static void Game_UpdatePlaying(void)
@@ -227,7 +215,7 @@ bool Game_Init(void)
 
     srand((unsigned)time(NULL));
 
-    (void)Audio_Init();
+    Audio_Init();
 
     gGameState = GAME_STATE_MENU;
 
@@ -250,11 +238,9 @@ void Game_Run(void)
 
         if (gGameState == GAME_STATE_MENU)
         {
-            if (Input_Start() &&
-                !Game_Start())
+            if (Input_Start())
             {
-                running = false;
-                continue;
+                Game_Start();
             }
 
             if (gGameState == GAME_STATE_MENU)

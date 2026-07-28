@@ -1,11 +1,9 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include <stdbool.h>
-
 #include "direction.h"
 
-bool Bullet_Init(void);
+void Bullet_Init(void);
 
 int Bullet_Update(void);
 
@@ -16,7 +14,5 @@ void Bullet_Shoot(
     int startY,
     Direction direction
 );
-
-bool Bullet_IsActive(void);
 
 #endif

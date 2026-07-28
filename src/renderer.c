@@ -1,6 +1,8 @@
 #include "renderer.h"
-#include "../tools/generated/assets.h"
+
 #include <SDL2/SDL.h>
+
+#include "../tools/generated/assets.h"
 
 #define SPRITE_SIZE 8
 #define SPRITESHEET_WIDTH 64
@@ -22,8 +24,7 @@ static void Renderer_DrawSpriteInternal(
     int spriteX,
     int spriteY,
     Direction direction,
-    bool mirrored,
-    const uint32_t *spriteSheet)
+    bool mirrored)
 {
     int startX = spriteX * SPRITE_SIZE;
     int startY = spriteY * SPRITE_SIZE;
@@ -57,8 +58,10 @@ static void Renderer_DrawSpriteInternal(
             }
 
             uint32_t color =
-                spriteSheet[(startY + sourceY) * SPRITESHEET_WIDTH +
-                            (startX + sourceX)];
+                gSpriteSheet[
+                    (startY + sourceY) *
+                        SPRITESHEET_WIDTH +
+                    startX + sourceX];
 
             Renderer_DrawPixel(
                 screenX * SPRITE_SIZE + x,
@@ -101,8 +104,6 @@ bool Renderer_Init(void)
         return false;
     }
 
-    /* ---------- Ícono de la ventana ---------- */
-
     uint32_t iconPixels[SPRITE_SIZE * SPRITE_SIZE];
 
     for (int y = 0; y < SPRITE_SIZE; y++)
@@ -115,7 +116,7 @@ bool Renderer_Init(void)
         }
     }
 
-    SDL_Surface* icon =
+    SDL_Surface *icon =
         SDL_CreateRGBSurfaceFrom(
             iconPixels,
             SPRITE_SIZE,
@@ -135,8 +136,6 @@ bool Renderer_Init(void)
 
         SDL_FreeSurface(icon);
     }
-
-    /* ----------------------------------------- */
 
     return true;
 }
@@ -159,9 +158,12 @@ void Renderer_DrawPixel(int x, int y, uint32_t color)
         (uint8_t)(color & 0xFF);
 
     if (a == 0)
+    {
         return;
+    }
 
-    SDL_Rect pixel = {
+    SDL_Rect pixel =
+    {
         ROOM_OFFSET_X + x * PIXEL_SCALE,
         ROOM_OFFSET_Y + y * PIXEL_SCALE,
         PIXEL_SCALE,
@@ -172,28 +174,19 @@ void Renderer_DrawPixel(int x, int y, uint32_t color)
     SDL_RenderFillRect(gRenderer, &pixel);
 }
 
-void Renderer_DrawSprite(int sx,int sy,int spx,int spy,const uint32_t *sheet)
-{
-    Renderer_DrawSpriteInternal(sx, sy, spx, spy, DIR_RIGHT, false, sheet);
-}
-
 void Renderer_DrawAssetSprite(
     int screenX,
     int screenY,
     int spriteX,
     int spriteY)
 {
-    Renderer_DrawSprite(
+    Renderer_DrawSpriteInternal(
         screenX,
         screenY,
         spriteX,
         spriteY,
-        gSpriteSheet);
-}
-
-void Renderer_DrawSpriteEx(int sx,int sy,int spx,int spy,Direction dir,const uint32_t *sheet)
-{
-    Renderer_DrawSpriteInternal(sx, sy, spx, spy, dir, false, sheet);
+        DIR_RIGHT,
+        false);
 }
 
 void Renderer_DrawAssetSpriteEx(
@@ -203,18 +196,13 @@ void Renderer_DrawAssetSpriteEx(
     int spriteY,
     Direction direction)
 {
-    Renderer_DrawSpriteEx(
+    Renderer_DrawSpriteInternal(
         screenX,
         screenY,
         spriteX,
         spriteY,
         direction,
-        gSpriteSheet);
-}
-
-void Renderer_DrawSpriteMirrored(int sx,int sy,int spx,int spy,bool mirrored,const uint32_t *sheet)
-{
-    Renderer_DrawSpriteInternal(sx, sy, spx, spy, DIR_RIGHT, mirrored, sheet);
+        false);
 }
 
 void Renderer_DrawAssetSpriteMirrored(
@@ -224,13 +212,13 @@ void Renderer_DrawAssetSpriteMirrored(
     int spriteY,
     bool mirrored)
 {
-    Renderer_DrawSpriteMirrored(
+    Renderer_DrawSpriteInternal(
         screenX,
         screenY,
         spriteX,
         spriteY,
-        mirrored,
-        gSpriteSheet);
+        DIR_RIGHT,
+        mirrored);
 }
 
 void Renderer_DrawScreenSprite(

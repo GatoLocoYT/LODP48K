@@ -9,15 +9,10 @@
 static const uint8_t* gCurrentRoom = NULL;
 static int gCurrentRoomIndex = -1;
 
-void Room_Load(int index)
+static void Room_Load(int index)
 {
     gCurrentRoomIndex = index;
     gCurrentRoom = gRooms[index];
-}
-
-const uint8_t* Room_GetCurrent(void)
-{
-    return gCurrentRoom;
 }
 
 void Room_Draw(void)
@@ -34,22 +29,13 @@ void Room_Draw(void)
             uint8_t tile =
                 gCurrentRoom[y * ROOM_WIDTH + x];
 
-            switch (tile)
+            if (tile == TILE_WALL)
             {
-                case TILE_WALL:
-
-                    Renderer_DrawAssetSprite(
-                        x,
-                        y,
-                        3,
-                        0
-                    );
-
-                    break;
-
-                case TILE_EMPTY:
-                default:
-                    break;
+                Renderer_DrawAssetSprite(
+                    x,
+                    y,
+                    3,
+                    0);
             }
         }
     }
@@ -64,8 +50,7 @@ bool Room_IsWalkable(
         return false;
     }
 
-    // Permitimos salir del mapa.
-    // El cambio de habitación se maneja en game.c.
+    /* La salida del mapa cambia la habitacion en game.c. */
     if (x < 0 || x >= ROOM_WIDTH)
     {
         return true;

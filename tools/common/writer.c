@@ -10,7 +10,10 @@ bool Writer_SaveSpriteSheet(
 
     if (file == NULL)
     {
-        printf("Error: could not create %s\n", filename);
+        fprintf(
+            stderr,
+            "Error: could not create %s\n",
+            filename);
         return false;
     }
 

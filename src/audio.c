@@ -1,6 +1,7 @@
 #include "audio.h"
 
 #include <SDL2/SDL.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #define AUDIO_FREQUENCY 8000
@@ -25,6 +26,20 @@ static uint32_t
     gDeathTime = AUDIO_DEATH_DURATION;
 static uint32_t
     gVictoryTime = AUDIO_VICTORY_DURATION;
+
+static void Audio_StopEffects(void)
+{
+    gDeathTime = AUDIO_DEATH_DURATION;
+    gVictoryTime = AUDIO_VICTORY_DURATION;
+
+    for (int i = 0;
+         i < AUDIO_SHOT_VOICES;
+         i++)
+    {
+        gShotTimes[i] =
+            AUDIO_SHOT_DURATION;
+    }
+}
 
 static int Audio_ToSigned(uint8_t value)
 {
@@ -228,12 +243,12 @@ static void Audio_Callback(
     }
 }
 
-bool Audio_Init(void)
+void Audio_Init(void)
 {
     if (SDL_InitSubSystem(
             SDL_INIT_AUDIO) != 0)
     {
-        return false;
+        return;
     }
 
     SDL_AudioSpec desired;
@@ -271,7 +286,7 @@ bool Audio_Init(void)
 
         SDL_QuitSubSystem(
             SDL_INIT_AUDIO);
-        return false;
+        return;
     }
 
     Audio_StopAll();
@@ -280,7 +295,6 @@ bool Audio_Init(void)
         gAudioDevice,
         0);
 
-    return true;
 }
 
 void Audio_StartGame(void)
@@ -294,17 +308,7 @@ void Audio_StartGame(void)
 
     gMusicTime = 0;
     gMusicPlaying = true;
-    gDeathTime = AUDIO_DEATH_DURATION;
-    gVictoryTime =
-        AUDIO_VICTORY_DURATION;
-
-    for (int i = 0;
-         i < AUDIO_SHOT_VOICES;
-         i++)
-    {
-        gShotTimes[i] =
-            AUDIO_SHOT_DURATION;
-    }
+    Audio_StopEffects();
 
     SDL_UnlockAudioDevice(gAudioDevice);
 }
@@ -353,17 +357,8 @@ void Audio_PlayPlayerDeath(void)
     SDL_LockAudioDevice(gAudioDevice);
 
     gMusicPlaying = false;
+    Audio_StopEffects();
     gDeathTime = 0;
-    gVictoryTime =
-        AUDIO_VICTORY_DURATION;
-
-    for (int i = 0;
-         i < AUDIO_SHOT_VOICES;
-         i++)
-    {
-        gShotTimes[i] =
-            AUDIO_SHOT_DURATION;
-    }
 
     SDL_UnlockAudioDevice(gAudioDevice);
 }
@@ -378,16 +373,8 @@ void Audio_PlayVictory(void)
     SDL_LockAudioDevice(gAudioDevice);
 
     gMusicPlaying = false;
-    gDeathTime = AUDIO_DEATH_DURATION;
+    Audio_StopEffects();
     gVictoryTime = 0;
-
-    for (int i = 0;
-         i < AUDIO_SHOT_VOICES;
-         i++)
-    {
-        gShotTimes[i] =
-            AUDIO_SHOT_DURATION;
-    }
 
     SDL_UnlockAudioDevice(gAudioDevice);
 }
@@ -402,17 +389,7 @@ void Audio_StopAll(void)
     SDL_LockAudioDevice(gAudioDevice);
 
     gMusicPlaying = false;
-    gDeathTime = AUDIO_DEATH_DURATION;
-    gVictoryTime =
-        AUDIO_VICTORY_DURATION;
-
-    for (int i = 0;
-         i < AUDIO_SHOT_VOICES;
-         i++)
-    {
-        gShotTimes[i] =
-            AUDIO_SHOT_DURATION;
-    }
+    Audio_StopEffects();
 
     SDL_UnlockAudioDevice(gAudioDevice);
 }

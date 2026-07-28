@@ -1,17 +1,16 @@
 #include "player.h"
+
+#include <SDL2/SDL.h>
+
 #include "bullet.h"
 #include "input.h"
 #include "renderer.h"
 #include "room.h"
 
-#include <SDL2/SDL.h>
-#include "bullet.h"
-
-static Uint32 gLastShotTime = 0;
-
 #define FIRE_DELAY 120
-#define PLAYER_MAX_HP 4
+#define PLAYER_MAX_HP 5
 #define PLAYER_INVULNERABILITY_TIME 3000
+#define PLAYER_MOVE_DELAY 140
 
 static int gPlayerX = 8;
 static int gPlayerY = 8;
@@ -19,29 +18,25 @@ static int gPlayerHP = PLAYER_MAX_HP;
 
 static Direction gDirection = DIR_RIGHT;
 
-#include <SDL2/SDL.h>
-
 static Uint32 gLastMoveTime = 0;
+static Uint32 gLastShotTime = 0;
 static Uint32 gLastDamageTime = 0;
 
-static bool gDamageCooldownActive = false;
-
-#define PLAYER_MOVE_DELAY 140
-
-bool Player_Init(void)
+void Player_Init(void)
 {
+    Uint32 now = SDL_GetTicks();
+
     gPlayerX = 8;
     gPlayerY = 8;
     gPlayerHP = PLAYER_MAX_HP;
 
     gDirection = DIR_RIGHT;
 
-    gLastMoveTime = SDL_GetTicks();
-    gLastShotTime = SDL_GetTicks();
-    gLastDamageTime = 0;
-    gDamageCooldownActive = false;
-
-    return true;
+    gLastMoveTime = now;
+    gLastShotTime = now;
+    gLastDamageTime =
+        now -
+        PLAYER_INVULNERABILITY_TIME;
 }
 
 bool Player_Update(void)
@@ -148,27 +143,23 @@ void Player_Draw(void)
         gDirection);
 }
 
-bool Player_Damage(void)
+void Player_Damage(void)
 {
     if (gPlayerHP <= 0)
     {
-        return false;
+        return;
     }
 
     Uint32 now = SDL_GetTicks();
 
-    if (gDamageCooldownActive &&
-        now - gLastDamageTime <
-            PLAYER_INVULNERABILITY_TIME)
+    if (now - gLastDamageTime <
+        PLAYER_INVULNERABILITY_TIME)
     {
-        return false;
+        return;
     }
 
     gPlayerHP--;
     gLastDamageTime = now;
-    gDamageCooldownActive = true;
-
-    return true;
 }
 
 int Player_GetX(void)

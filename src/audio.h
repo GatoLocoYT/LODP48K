@@ -1,9 +1,7 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-#include <stdbool.h>
-
-bool Audio_Init(void);
+void Audio_Init(void);
 
 void Audio_StartGame(void);
 

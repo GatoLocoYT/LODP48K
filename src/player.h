@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "direction.h"
 
-bool Player_Init(void);
+void Player_Init(void);
 
 bool Player_Update(void);
 
@@ -12,7 +12,7 @@ void Player_EnterRoom(void);
 
 void Player_Draw(void);
 
-bool Player_Damage(void);
+void Player_Damage(void);
 
 int Player_GetX(void);
 int Player_GetY(void);

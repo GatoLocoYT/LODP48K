@@ -22,7 +22,7 @@
 
 #define HUD_MAX_TIME 999
 #define HUD_MAX_SCORE 999999
-#define HUD_MAX_HP 4
+#define HUD_MAX_HP 5
 
 static void Hud_DrawGlyph(
     int x,

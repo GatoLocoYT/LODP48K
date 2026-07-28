@@ -1,5 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
+
 #include <stdbool.h>
 
 bool Game_Init(void);

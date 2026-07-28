@@ -1,12 +1,13 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#include <stdint.h>
 #include <stdbool.h>
 
-#include "../tools/generated/rooms.h"
+#define ROOM_WIDTH 16
+#define ROOM_HEIGHT 16
 
-void Room_Load(int index);
+#define TILE_EMPTY 0
+#define TILE_WALL 1
 
 void Room_LoadRandom(void);
 
@@ -16,7 +17,5 @@ bool Room_IsWalkable(
     int x,
     int y
 );
-
-const uint8_t* Room_GetCurrent(void);
 
 #endif

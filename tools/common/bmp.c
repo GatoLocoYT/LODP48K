@@ -26,7 +26,10 @@ bool BMP_Load(const char *path, Bitmap *bmp)
 
     if (file == NULL)
     {
-        printf("Error: could not open BMP file: %s\n", path);
+        fprintf(
+            stderr,
+            "Error: could not open BMP file: %s\n",
+            path);
         return false;
     }
 
@@ -34,7 +37,9 @@ bool BMP_Load(const char *path, Bitmap *bmp)
     uint16_t signature = ReadU16(file);
     if (signature != 0x4D42) // "BM"
     {
-        printf("Error: invalid BMP file.\n");
+        fprintf(
+            stderr,
+            "Error: invalid BMP file.\n");
         fclose(file);
         return false;
     }
@@ -65,22 +70,21 @@ bool BMP_Load(const char *path, Bitmap *bmp)
     bmp->bitsPerPixel = (int)ReadU16(file);
     uint32_t compression = ReadU32(file);
 
-    printf("Width       : %d\n", bmp->width);
-    printf("Height      : %d\n", bmp->height);
-    printf("Bits        : %d\n", bmp->bitsPerPixel);
-    printf("Compression : %u\n", compression);
-    printf("Format      : %s\n", isBottomUp ? "Bottom-Up (Inverted)" : "Top-Down (Normal)");
-
     if (bmp->bitsPerPixel != 32)
     {
-        printf("Error: only 32-bit BMP files are supported.\n");
+        fprintf(
+            stderr,
+            "Error: only 32-bit BMP files are supported.\n");
         fclose(file);
         return false;
     }
 
     if (compression != 0 && compression != 3)
     {
-        printf("Error: unsupported BMP compression mode (%u).\n", compression);
+        fprintf(
+            stderr,
+            "Error: unsupported BMP compression mode (%u).\n",
+            compression);
         fclose(file);
         return false;
     }
@@ -90,7 +94,9 @@ bool BMP_Load(const char *path, Bitmap *bmp)
 
     if (bmp->pixels == NULL)
     {
-        printf("Error: out of memory.\n");
+        fprintf(
+            stderr,
+            "Error: out of memory.\n");
         fclose(file);
         return false;
     }
@@ -109,7 +115,10 @@ bool BMP_Load(const char *path, Bitmap *bmp)
             
             if (pixelsRead != (size_t)bmp->width)
             {
-                printf("Error: could not read pixel data at row %d.\n", y);
+                fprintf(
+                    stderr,
+                    "Error: could not read pixel data at row %d.\n",
+                    y);
                 BMP_Free(bmp);
                 fclose(file);
                 return false;
@@ -122,7 +131,9 @@ bool BMP_Load(const char *path, Bitmap *bmp)
         size_t pixelsRead = fread(bmp->pixels, sizeof(uint32_t), pixelCount, file);
         if (pixelsRead != pixelCount)
         {
-            printf("Error: could not read pixel data.\n");
+            fprintf(
+                stderr,
+                "Error: could not read pixel data.\n");
             BMP_Free(bmp);
             fclose(file);
             return false;

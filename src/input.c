@@ -15,7 +15,6 @@ static bool gQuit = false;
 void Input_Update(void)
 {
     SDL_Event event;
-    gShoot = false;
     gStart = false;
     gNavigateUp = false;
     gNavigateDown = false;
@@ -87,6 +86,7 @@ bool Input_Quit(void)
 {
     return gQuit;
 }
+
 bool Input_Shoot(void)
 {
     return gShoot;

@@ -79,7 +79,9 @@ int main(void)
 
     if (out == NULL)
     {
-        printf("Error: could not create rooms.h\n");
+        fprintf(
+            stderr,
+            "Error: could not create rooms.h\n");
         return 1;
     }
 
@@ -102,19 +104,19 @@ int main(void)
 
     for (int room = 1; room <= ROOM_COUNT; room++)
     {
-        sprintf(
+        snprintf(
             path,
+            sizeof(path),
             "../../assets/rooms/room_%03d.bmp",
             room
         );
-
-        printf("Loading %s\n", path);
 
         Bitmap bmp = {0};
 
         if (!BMP_Load(path, &bmp))
         {
-            printf(
+            fprintf(
+                stderr,
                 "Failed to load room %03d.\n",
                 room
             );
@@ -122,12 +124,6 @@ int main(void)
             fclose(out);
             return 1;
         }
-
-        printf(
-            "  %dx%d\n",
-            bmp.width,
-            bmp.height
-        );
 
         WriteRoom(
             out,
@@ -168,8 +164,6 @@ int main(void)
     );
 
     fclose(out);
-
-    printf("\nrooms.h generated successfully.\n");
 
     return 0;
 }

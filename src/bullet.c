@@ -1,6 +1,7 @@
 #include "bullet.h"
 
 #include <SDL2/SDL.h>
+#include <stdbool.h>
 
 #include "audio.h"
 #include "enemy.h"
@@ -30,14 +31,12 @@ typedef struct
 
 static Bullet gBullets[BULLET_POOL_SIZE];
 
-bool Bullet_Init(void)
+void Bullet_Init(void)
 {
     for (int i = 0; i < BULLET_POOL_SIZE; i++)
     {
         gBullets[i].active = false;
     }
-
-    return true;
 }
 
 void Bullet_Shoot(
@@ -175,60 +174,20 @@ void Bullet_Draw(void)
             continue;
         }
 
-        switch (bullet->direction)
+        bool horizontal =
+            bullet->direction == DIR_RIGHT ||
+            bullet->direction == DIR_LEFT;
+
+        for (int pixel = 0;
+             pixel < BULLET_LENGTH;
+             pixel++)
         {
-            case DIR_RIGHT:
-            case DIR_LEFT:
-
-                Renderer_DrawPixel(
-                    bullet->pixelX,
-                    bullet->pixelY,
-                    0xFFFFFFFF);
-
-                Renderer_DrawPixel(
-                    bullet->pixelX + 1,
-                    bullet->pixelY,
-                    0xFFFFFFFF);
-
-                Renderer_DrawPixel(
-                    bullet->pixelX + 2,
-                    bullet->pixelY,
-                    0xFFFFFFFF);
-
-                break;
-
-            case DIR_UP:
-            case DIR_DOWN:
-
-                Renderer_DrawPixel(
-                    bullet->pixelX,
-                    bullet->pixelY,
-                    0xFFFFFFFF);
-
-                Renderer_DrawPixel(
-                    bullet->pixelX,
-                    bullet->pixelY + 1,
-                    0xFFFFFFFF);
-
-                Renderer_DrawPixel(
-                    bullet->pixelX,
-                    bullet->pixelY + 2,
-                    0xFFFFFFFF);
-
-                break;
+            Renderer_DrawPixel(
+                bullet->pixelX +
+                    (horizontal ? pixel : 0),
+                bullet->pixelY +
+                    (horizontal ? 0 : pixel),
+                0xFFFFFFFF);
         }
     }
-}
-
-bool Bullet_IsActive(void)
-{
-    for (int i = 0; i < BULLET_POOL_SIZE; i++)
-    {
-        if (gBullets[i].active)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
