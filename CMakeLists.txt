@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(LODP48K VERSION 0.1.0 LANGUAGES C)
+project(LODP48K VERSION 1.0.0 LANGUAGES C)
 
 # ===========================
 # Configuración del compilador
@@ -19,7 +19,7 @@ find_package(SDL2 REQUIRED)
 # Ejecutable
 # ===========================
 
-add_executable(LODP48K
+add_executable(LODP48K WIN32
     src/main.c
     src/audio.c
     src/defeat.c
@@ -35,6 +35,7 @@ add_executable(LODP48K
     src/raycast.c
     src/enemy.c
     src/victory.c
+    icon.rc
 )
 
 # ===========================
